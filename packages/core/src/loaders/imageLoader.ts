@@ -43,10 +43,20 @@ function loadImageFromImageLoader(
   }
   // Load using the registered loader
   const imageLoadObject = loader(imageId, options);
+
+  console.log(imageLoadObject);
+
   // Broadcast an image loaded event once the image is loaded
   imageLoadObject.promise.then(
     function (image) {
-      triggerEvent(eventTarget, Events.IMAGE_LOADED, { image });
+      if (Array.isArray(image)) {
+        console.log(image);
+        for (const frame of image) {
+          triggerEvent(eventTarget, Events.IMAGE_LOADED, { frame });
+        }
+      } else {
+        triggerEvent(eventTarget, Events.IMAGE_LOADED, { image });
+      }
     },
     function (error) {
       const errorObject: EventTypes.ImageLoadedFailedEventDetail = {
